@@ -1,0 +1,69 @@
+﻿@model CommunityLibraryDesk.Models.ViewModels.BookFilterViewModel
+
+@{
+    ViewData["Title"] = "Books";
+}
+
+<h1>Books</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">New Book</a>
+</p>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-4">
+        <input asp-for="SearchTerm" class="form-control" placeholder="Search by title or author" />
+    </div>
+
+    <div class="col-md-3">
+        <select asp-for="Category" class="form-select">
+            <option value="">All categories</option>
+            @foreach (var item in Model.Categories)
+            {
+                <option value="@item">@item</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select asp-for="Availability" class="form-select">
+            <option value="">All</option>
+            <option value="Available">Available</option>
+            <option value="OnLoan">On loan</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-success w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Category</th>
+            <th>Available</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Books)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Author</td>
+                <td>@item.Isbn</td>
+                <td>@item.Category</td>
+                <td>@(item.IsAvailable ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
