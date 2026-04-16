@@ -1,0 +1,52 @@
+@model oop_s2_1_mvc_78097.ViewModels.LoanCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Loan";
+}
+
+<h1>Create Loan</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="BookId" class="form-label">Book</label>
+                <select asp-for="BookId" asp-items="Model.AvailableBooks" class="form-select">
+                    <option value="">Select a book</option>
+                </select>
+                <span asp-validation-for="BookId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MemberId" class="form-label">Member</label>
+                <select asp-for="MemberId" asp-items="Model.Members" class="form-select">
+                    <option value="">Select a member</option>
+                </select>
+                <span asp-validation-for="MemberId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LoanDate" class="form-label"></label>
+                <input asp-for="LoanDate" type="date" class="form-control" />
+                <span asp-validation-for="LoanDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="DueDate" class="form-label"></label>
+                <input asp-for="DueDate" type="date" class="form-control" />
+                <span asp-validation-for="DueDate" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Loan</button>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

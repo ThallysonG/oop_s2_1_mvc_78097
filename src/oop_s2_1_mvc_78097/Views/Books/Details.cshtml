@@ -1,0 +1,31 @@
+@model oop_s2_1_mvc_78097.Models.Book
+
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<h1>Book Details</h1>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-2">Title</dt>
+    <dd class="col-sm-10">@Model.Title</dd>
+
+    <dt class="col-sm-2">Author</dt>
+    <dd class="col-sm-10">@Model.Author</dd>
+
+    <dt class="col-sm-2">ISBN</dt>
+    <dd class="col-sm-10">@Model.Isbn</dd>
+
+    <dt class="col-sm-2">Category</dt>
+    <dd class="col-sm-10">@Model.Category</dd>
+
+    <dt class="col-sm-2">Availability</dt>
+    <dd class="col-sm-10">
+        @(Model.IsAvailable ? "Available" : "On Loan")
+    </dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

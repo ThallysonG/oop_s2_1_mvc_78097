@@ -1,0 +1,51 @@
+@model oop_s2_1_mvc_78097.Models.Loan
+
+@{
+    ViewData["Title"] = "Loan Details";
+    var isOverdue = Model.ReturnedDate == null && Model.DueDate.Date < DateTime.Today;
+}
+
+<h1>Loan Details</h1>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Book</dt>
+    <dd class="col-sm-9">@Model.Book?.Title</dd>
+
+    <dt class="col-sm-3">Author</dt>
+    <dd class="col-sm-9">@Model.Book?.Author</dd>
+
+    <dt class="col-sm-3">Member</dt>
+    <dd class="col-sm-9">@Model.Member?.FullName</dd>
+
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">@Model.Member?.Email</dd>
+
+    <dt class="col-sm-3">Loan Date</dt>
+    <dd class="col-sm-9">@Model.LoanDate.ToString("dd/MM/yyyy")</dd>
+
+    <dt class="col-sm-3">Due Date</dt>
+    <dd class="col-sm-9">@Model.DueDate.ToString("dd/MM/yyyy")</dd>
+
+    <dt class="col-sm-3">Returned Date</dt>
+    <dd class="col-sm-9">@(Model.ReturnedDate?.ToString("dd/MM/yyyy") ?? "-")</dd>
+
+    <dt class="col-sm-3">Status</dt>
+    <dd class="col-sm-9">
+        @if (Model.ReturnedDate != null)
+        {
+        <span class="badge bg-success">Returned</span>
+        }
+        else if (isOverdue)
+        {
+        <span class="badge bg-danger">Overdue</span>
+        }
+        else
+        {
+        <span class="badge bg-warning text-dark">Active</span>
+        }
+    </dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
