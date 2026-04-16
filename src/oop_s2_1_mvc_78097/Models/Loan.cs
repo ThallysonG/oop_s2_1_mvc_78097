@@ -9,8 +9,8 @@ namespace oop_s2_1_mvc_78097.Models
         public DateTime DueDate { get; set; }
         public DateTime? ReturnedDate { get; set; }
 
-        public Book? Book { get; set; }
         public Member? Member { get; set; }
+        public Book? Book { get; set; }
         public bool IsOverdue => ReturnedDate == null && DueDate.Date < DateTime.Today;
     }
 }

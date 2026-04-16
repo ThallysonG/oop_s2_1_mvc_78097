@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using oop_s2_1_mvc_78097.Data;
 using oop_s2_1_mvc_78097.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace oop_s2_1_mvc_78097.Controllers
 {
+    [Authorize]
     public class MembersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -33,6 +35,8 @@ namespace oop_s2_1_mvc_78097.Controllers
             }
 
             var member = await _context.Members
+                .Include(m => m.Loans)
+                    .ThenInclude(l => l.Book)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (member == null)

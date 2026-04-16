@@ -2,22 +2,172 @@
 
 @{
     ViewData["Title"] = "Member Details";
+
+    var allLoans = Model.Loans?
+        .OrderByDescending(l => l.LoanDate)
+        .ToList() ?? new List<oop_s2_1_mvc_78097.Models.Loan>();
+
+    var activeLoans = allLoans
+        .Where(l => l.ReturnedDate == null)
+        .OrderBy(l => l.DueDate)
+        .ToList();
+
+    var returnedLoans = allLoans
+        .Where(l => l.ReturnedDate != null)
+        .OrderByDescending(l => l.ReturnedDate)
+        .ToList();
+
+    var overdueLoansCount = activeLoans.Count(l => l.DueDate.Date < DateTime.Today);
+    var activeLoansCount = activeLoans.Count;
+    var returnedLoansCount = returnedLoans.Count;
+    var totalLoansCount = allLoans.Count;
 }
 
-<h1>Member Details</h1>
+<h1 class="mb-4">Member Details</h1>
 
-<hr />
+<h4 class="mb-3">Member Information</h4>
+<table class="table table-bordered table-striped mb-4">
+    <thead class="table-light">
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.FullName</td>
+            <td>@Model.Email</td>
+            <td>@Model.Phone</td>
+        </tr>
+    </tbody>
+</table>
 
-<dl class="row">
-    <dt class="col-sm-2">Full Name</dt>
-    <dd class="col-sm-10">@Model.FullName</dd>
+<h4 class="mb-3">Loan Summary</h4>
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h6 class="card-title">Total Loans</h6>
+                <h3>@totalLoansCount</h3>
+            </div>
+        </div>
+    </div>
 
-    <dt class="col-sm-2">Email</dt>
-    <dd class="col-sm-10">@Model.Email</dd>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-warning">
+            <div class="card-body">
+                <h6 class="card-title">Active Loans</h6>
+                <h3>@activeLoansCount</h3>
+            </div>
+        </div>
+    </div>
 
-    <dt class="col-sm-2">Phone</dt>
-    <dd class="col-sm-10">@Model.Phone</dd>
-</dl>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-success">
+            <div class="card-body">
+                <h6 class="card-title">Returned Loans</h6>
+                <h3>@returnedLoansCount</h3>
+            </div>
+        </div>
+    </div>
 
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-danger">
+            <div class="card-body">
+                <h6 class="card-title">Overdue Loans</h6>
+                <h3>@overdueLoansCount</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3">Current Loans</h4>
+
+@if (activeLoans.Any())
+{
+    <table class="table table-bordered table-striped mb-4">
+        <thead class="table-light">
+            <tr>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Loan Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var loan in activeLoans)
+            {
+                var isOverdue = loan.DueDate.Date < DateTime.Today;
+
+                <tr>
+                    <td>@loan.Book?.Title</td>
+                    <td>@loan.Book?.Author</td>
+                    <td>@loan.LoanDate.ToString("dd/MM/yyyy")</td>
+                    <td>@loan.DueDate.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @if (isOverdue)
+                        {
+                            <span class="badge bg-danger">Overdue</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Active</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info mb-4">
+        This member currently has no active loans.
+    </div>
+}
+
+<h4 class="mb-3">Returned Loans History</h4>
+
+@if (returnedLoans.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Loan Date</th>
+                <th>Due Date</th>
+                <th>Returned Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var loan in returnedLoans)
+            {
+                <tr>
+                    <td>@loan.Book?.Title</td>
+                    <td>@loan.Book?.Author</td>
+                    <td>@loan.LoanDate.ToString("dd/MM/yyyy")</td>
+                    <td>@loan.DueDate.ToString("dd/MM/yyyy")</td>
+                    <td>@loan.ReturnedDate?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <span class="badge bg-success">Returned</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-secondary">
+        This member has no returned loan history yet.
+    </div>
+}
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

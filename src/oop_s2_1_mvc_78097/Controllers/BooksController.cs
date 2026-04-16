@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using oop_s2_1_mvc_78097.Data;
 using oop_s2_1_mvc_78097.Models;
 using oop_s2_1_mvc_78097.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace oop_s2_1_mvc_78097.Controllers
 {
+    [Authorize]
     public class BooksController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -70,7 +72,9 @@ namespace oop_s2_1_mvc_78097.Controllers
             }
 
             var book = await _context.Books
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(b => b.Loans)
+                    .ThenInclude(l => l.Member)
+                .FirstOrDefaultAsync(b => b.Id == id);
 
             if (book == null)
             {

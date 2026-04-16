@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using oop_s2_1_mvc_78097.Data;
 using oop_s2_1_mvc_78097.Models;
 using oop_s2_1_mvc_78097.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace oop_s2_1_mvc_78097.Controllers
 {
+    [Authorize]
     public class LoansController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,15 +19,44 @@ namespace oop_s2_1_mvc_78097.Controllers
         }
 
         // GET: Loans
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm, string status = "All")
         {
-            var loans = await _context.Loans
+            IQueryable<Loan> query = _context.Loans
                 .Include(l => l.Book)
-                .Include(l => l.Member)
+                .Include(l => l.Member);
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(l =>
+                    (l.Book != null && (l.Book.Title.Contains(searchTerm) || l.Book.Author.Contains(searchTerm))) ||
+                    (l.Member != null && l.Member.FullName.Contains(searchTerm)));
+            }
+
+            if (status == "Active")
+            {
+                query = query.Where(l => l.ReturnedDate == null && l.DueDate >= DateTime.Today);
+            }
+            else if (status == "Overdue")
+            {
+                query = query.Where(l => l.ReturnedDate == null && l.DueDate < DateTime.Today);
+            }
+            else if (status == "Returned")
+            {
+                query = query.Where(l => l.ReturnedDate != null);
+            }
+
+            var loans = await query
                 .OrderByDescending(l => l.LoanDate)
                 .ToListAsync();
 
-            return View(loans);
+            var viewModel = new oop_s2_1_mvc_78097.ViewModels.LoanFilterViewModel
+            {
+                SearchTerm = searchTerm ?? string.Empty,
+                Status = status,
+                Loans = loans
+            };
+
+            return View(viewModel);
         }
 
         // GET: Loans/Details/5

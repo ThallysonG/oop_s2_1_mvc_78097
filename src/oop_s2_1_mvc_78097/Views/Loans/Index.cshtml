@@ -1,35 +1,135 @@
-@model IEnumerable<oop_s2_1_mvc_78097.Models.Loan>
+@model oop_s2_1_mvc_78097.ViewModels.LoanFilterViewModel
 
-    @{
+@{
     ViewData["Title"] = "Loans";
-    }
 
-    <h1 class="mb-4">Loans</h1>
+    var totalLoans = Model.Loans.Count;
+    var activeLoans = Model.Loans.Count(l => l.ReturnedDate == null && l.DueDate.Date >= DateTime.Today);
+    var overdueLoans = Model.Loans.Count(l => l.ReturnedDate == null && l.DueDate.Date < DateTime.Today);
+    var returnedLoans = Model.Loans.Count(l => l.ReturnedDate != null);
+}
 
-    <div class="mb-3">
-        <a asp-action="Create" class="btn btn-primary">Create Loan</a>
+<h1 class="mb-4">Loans</h1>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">Create Loan</a>
+</div>
+<div class="mb-3">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Back to Home</a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h6 class="card-title">Total Loans</h6>
+                <h3>@totalLoans</h3>
+            </div>
+        </div>
     </div>
 
-    <table class="table table-striped table-bordered">
-        <thead class="table-light">
-            <tr>
-                <th>Book</th>
-                <th>Member</th>
-                <th>Loan Date</th>
-                <th>Due Date</th>
-                <th>Returned Date</th>
-                <th>Status</th>
-                <th style="width: 260px;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var loan in Model)
+    <div class="col-md-3">
+        <div class="card shadow-sm border-warning">
+            <div class="card-body">
+                <h6 class="card-title">Active Loans</h6>
+                <h3>@activeLoans</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-danger">
+            <div class="card-body">
+                <h6 class="card-title">Overdue Loans</h6>
+                <h3>@overdueLoans</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-success">
+            <div class="card-body">
+                <h6 class="card-title">Returned Loans</h6>
+                <h3>@returnedLoans</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-6">
+        <label class="form-label">Search by Book or Member</label>
+        <input type="text" name="searchTerm" value="@Model.SearchTerm" class="form-control" />
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select">
+            @if (Model.Status == "All")
+            {
+                <option value="All" selected>All</option>
+            }
+            else
+            {
+                <option value="All">All</option>
+            }
+
+            @if (Model.Status == "Active")
+            {
+                <option value="Active" selected>Active</option>
+            }
+            else
+            {
+                <option value="Active">Active</option>
+            }
+
+            @if (Model.Status == "Overdue")
+            {
+                <option value="Overdue" selected>Overdue</option>
+            }
+            else
+            {
+                <option value="Overdue">Overdue</option>
+            }
+
+            @if (Model.Status == "Returned")
+            {
+                <option value="Returned" selected>Returned</option>
+            }
+            else
+            {
+                <option value="Returned">Returned</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-success w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>Book</th>
+            <th>Author</th>
+            <th>Member</th>
+            <th>Loan Date</th>
+            <th>Due Date</th>
+            <th>Returned Date</th>
+            <th>Status</th>
+            <th style="width: 260px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var loan in Model.Loans)
         {
             var isOverdue = loan.ReturnedDate == null && loan.DueDate.Date < DateTime.Today;
             var isActive = loan.ReturnedDate == null;
 
             <tr>
                 <td>@loan.Book?.Title</td>
+                <td>@loan.Book?.Author</td>
                 <td>@loan.Member?.FullName</td>
                 <td>@loan.LoanDate.ToString("dd/MM/yyyy")</td>
                 <td>@loan.DueDate.ToString("dd/MM/yyyy")</td>
@@ -37,15 +137,15 @@
                 <td>
                     @if (loan.ReturnedDate != null)
                     {
-                    <span class="badge bg-success">Returned</span>
+                        <span class="badge bg-success">Returned</span>
                     }
                     else if (isOverdue)
                     {
-                    <span class="badge bg-danger">Overdue</span>
+                        <span class="badge bg-danger">Overdue</span>
                     }
                     else
                     {
-                    <span class="badge bg-warning text-dark">Active</span>
+                        <span class="badge bg-warning text-dark">Active</span>
                     }
                 </td>
                 <td>
@@ -53,13 +153,13 @@
 
                     @if (isActive)
                     {
-                    <form asp-action="MarkReturned" asp-route-id="@loan.Id" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-sm btn-success">Mark Returned</button>
-                    </form>
+                        <form asp-action="MarkReturned" asp-route-id="@loan.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-success">Mark Returned</button>
+                        </form>
                     }
                 </td>
             </tr>
         }
-        </tbody>
-    </table>
+    </tbody>
+</table>

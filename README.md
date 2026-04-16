@@ -1,101 +1,60 @@
-# Community Library Desk System
+﻿# 📚 Community Library Desk
 
-## Overview
-
-This project is an ASP.NET Core MVC application developed for the **Modern Programming Principles and Practice** module.
-
-It simulates a small community library system where staff can manage books, members, and loans.
+A simple ASP.NET Core MVC application for managing a community library.  
+This system allows users to manage books, members, and loans, with authentication and role-based access control.
 
 ---
 
-## Features
+## 🚀 Features
 
-### Books
-
-* CRUD operations
-* Search by title or author
-* Filter by category
-* Filter by availability
-
-### Members
-
-* CRUD operations
-
-### Loans
-
-* Create loan (book + member)
-* Prevent duplicate active loans
-* Mark book as returned
-* Overdue detection
-
-### Admin
-
-* Role management page (`/Admin/Roles`)
-* Create and delete roles
-* Protected with Admin authorization
+- 📖 Book Management (CRUD)
+- 👤 Member Management (CRUD)
+- 🔄 Loan Management
+- 🔐 Authentication with ASP.NET Identity
+- 🛡️ Role-based Authorization (Admin/User)
+- 📊 Dashboard with system statistics
+- 🔎 Search and filtering
+- ⚠️ Overdue loan detection
 
 ---
 
-## Technologies Used
+## 🧱 Technologies Used
 
-* ASP.NET Core MVC (.NET 8)
-* Entity Framework Core (SQLite)
-* Identity
-* Bogus (fake data)
-* xUnit (tests)
-* GitHub Actions (CI)
-
----
-
-## Setup Instructions
-
-1. Clone the repository
-2. Run:
-
-```
-dotnet restore
-dotnet ef database update
-dotnet run
-```
-
-3. Open browser:
-
-```
-/Books
-```
+- ASP.NET Core MVC (.NET 8)
+- Entity Framework Core
+- SQLite Database
+- ASP.NET Identity
+- Bootstrap 5
 
 ---
 
-## Admin Access
+## 🖥️ System Overview
 
-Default admin user:
+The system is divided into:
 
-* Email: [admin@library.com](mailto:admin@library.com)
-* Password: Admin123!
-
----
-
-## Tests
-
-Run tests with:
-
-```
-dotnet test
-```
+- **Books** → Manage book catalog
+- **Members** → Manage library users
+- **Loans** → Track borrowed books
+- **Admin Roles** → Manage user roles (Admin only)
 
 ---
 
-## CI
+## 🔐 Authentication & Roles
 
-GitHub Actions automatically runs:
+The system uses ASP.NET Identity.
 
-* build
-* test
-
-on push and pull requests.
+### Roles:
+- **Admin**
+  - Full access
+  - Can manage roles
+- **User**
+  - Can manage books, members, and loans
 
 ---
 
-## Author
+## 🔑 Default Login Credentials
 
-Student Number: 78097
+```text
+Admin User:
+Email: admin@library.com
+Password: Admin123!

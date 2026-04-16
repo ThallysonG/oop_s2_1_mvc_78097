@@ -1,8 +1,74 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model oop_s2_1_mvc_78097.ViewModels.HomeDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-5">
+    <h1 class="display-4">Community Library Desk</h1>
+    <p class="lead">Library management dashboard</p>
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-primary h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Books</h5>
+                <h2>@Model.TotalBooks</h2>
+                <p class="text-muted mb-0">All books registered in the system</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-success h-100">
+            <div class="card-body">
+                <h5 class="card-title">Available Books</h5>
+                <h2>@Model.AvailableBooks</h2>
+                <p class="text-muted mb-0">Books currently available for loan</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-warning h-100">
+            <div class="card-body">
+                <h5 class="card-title">Books On Loan</h5>
+                <h2>@Model.OnLoanBooks</h2>
+                <p class="text-muted mb-0">Books currently borrowed by members</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-info h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Members</h5>
+                <h2>@Model.TotalMembers</h2>
+                <p class="text-muted mb-0">Registered library members</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-secondary h-100">
+            <div class="card-body">
+                <h5 class="card-title">Active Loans</h5>
+                <h2>@Model.ActiveLoans</h2>
+                <p class="text-muted mb-0">Loans not yet returned</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-danger h-100">
+            <div class="card-body">
+                <h5 class="card-title">Overdue Loans</h5>
+                <h2>@Model.OverdueLoans</h2>
+                <p class="text-muted mb-0">Loans past the due date</p>
+            </div>
+        </div>
+    </div>
+
 </div>
